@@ -1,12 +1,13 @@
 # ignore music files
 *.mp3
 *.m4a
+*.wav
 
 # ignore compiled python files
 *.pyc
 
 # ignore jupyter notebooks
-*.ipynb
+# *.ipynb
 
 # ignore pictures
 *.jpg

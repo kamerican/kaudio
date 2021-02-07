@@ -1,11 +1,7 @@
 {
-    "python.pythonPath": "env\\Scripts\\python.exe",
-    "python.linting.pylintEnabled": true,
-    "python.linting.enabled": true,
-    "python.linting.pylintArgs": [
-        "--extension-pkg-whitelist=cv2",
-        "--disable=C0111,C0103,R0903"
-    ],
-    "python.jediEnabled": false,
-    "python.autoComplete.addBrackets": true
+    "python.pythonPath": "e:\\python\\envs\\kaudio_env_py39\\Scripts\\python.exe",
+    // "python.linting.pylintEnabled": true,
+    // "python.linting.enabled": true,
+    "python.autoComplete.addBrackets": true,
+    "python.analysis.completeFunctionParens": true,
 }
