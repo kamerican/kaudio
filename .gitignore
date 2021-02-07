@@ -7,7 +7,7 @@
 *.pyc
 
 # ignore jupyter notebooks
-*.ipynb
+# *.ipynb
 
 # ignore pictures
 *.jpg
