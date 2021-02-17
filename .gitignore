@@ -16,7 +16,7 @@
 # ignore general files
 *.dat
 logs/
-
+*.ini
 
 
 # Byte-compiled / optimized / DLL files

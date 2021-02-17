@@ -4,4 +4,13 @@
     // "python.linting.enabled": true,
     "python.autoComplete.addBrackets": true,
     "python.analysis.completeFunctionParens": true,
+    "jupyter.jupyterServerType": "local",
+    "vim.handleKeys":{
+        "<C-d>": false,
+        "<C-f>": false,
+        "<C-x>": false,
+    },
+    "vim.useCtrlKeys": false,
+    "editor.snippetSuggestions": "top",
+    "editor.suggest.showSnippets": true,
 }
