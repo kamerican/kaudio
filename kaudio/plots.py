@@ -1,22 +1,24 @@
-from PySide6 import QtWidgets, QtCore
+from pyqtgraph.Qt import QtWidgets, QtCore
 import pyqtgraph as pg
 pg.setConfigOptions(antialias=True)
 import numpy as np
 # import pretty_errors
 
-class KaStereoWaveform(QtWidgets.QWidget):
+
+class View(QtWidgets.QWidget):
+# class GraphicsView(pg.GraphicsLayoutWidget):
     def __init__(self):
         super().__init__()
-        
-        self.button = QtWidgets.QPushButton("Hide waveforms")
-        
-        # self.text = QtWidgets.QLabel("Hello World", alignment=QtCore.Qt.AlignCenter)
-        
-        # self.traces = list()
-        self.stereo_waveforms = pg.GraphicsLayoutWidget()
-        
-        
-        
+        self.layout = QtWidgets.QVBoxLayout(self)
+    def add_widget(self, widget):
+        self.layout.addWidget(widget)
+
+
+
+class KaStereoWaveform(pg.GraphicsLayoutWidget):
+    def __init__(self):
+        super().__init__()
+        self.update_flag = True
         # self.stereo_waveforms = pg.GraphicsLayoutWidget(show=True)
         # self.stereo_waveforms.setWindowTitle('pyqtgraph example: Scrolling Plots')
         # self.setGeometry(5, 115, 1910, 1070)
@@ -38,7 +40,7 @@ class KaStereoWaveform(QtWidgets.QWidget):
         #     (0, '0'),
         #     (1, '1'),
         # ])
-        self.left_channel_plotitem = self.stereo_waveforms.addPlot(
+        self.left_channel_plotitem = self.addPlot(
             title="Left Channel",
             row=0,
             col=0,
@@ -47,17 +49,17 @@ class KaStereoWaveform(QtWidgets.QWidget):
             #     'left': y_axis
             # },
         )
-        self.right_channel_plotitem = self.stereo_waveforms.addPlot(
+        self.right_channel_plotitem = self.addPlot(
             title="Right Channel",
-            row=1,
-            col=0,
+            row=0,
+            col=1,
             # axisItems={
             #     'bottom': x_axis,
             #     'left': y_axis
             # },
         )
 
-        self.left_channel_plotitem.setXRange(0, 4 * 1024, padding=0.005)
+        self.left_channel_plotitem.setXRange(0, 7168, padding=0.005)
         self.left_channel_plotitem.setYRange(-1, 1, padding=0)
         self.left_channel_plotdataitem = self.left_channel_plotitem.plot(
             # np.arange(0, 9, 2, dtype=np.int16),
@@ -65,7 +67,7 @@ class KaStereoWaveform(QtWidgets.QWidget):
             width=3,
         )
         
-        self.right_channel_plotitem.setXRange(0, 4 * 1024, padding=0.005)
+        self.right_channel_plotitem.setXRange(0, 7168, padding=0.005)
         self.right_channel_plotitem.setYRange(-1, 1, padding=0)
         self.right_channel_plotdataitem = self.right_channel_plotitem.plot(
             # np.arange(0, 9, 2),
@@ -73,21 +75,6 @@ class KaStereoWaveform(QtWidgets.QWidget):
             width=3,
         )
 
-        # self.traces.append(waveform_plot)
-        self.layout = QtWidgets.QVBoxLayout(self)
-        
-        self.layout.addWidget(self.button)
-        
-        self.layout.addWidget(self.stereo_waveforms)
-        
-        # for trace in self.traces:
-        #     self.layout.addWidget(trace)
-        
-
-    # def add_waveform_plot(self, trace_name, row, column):
-        
-    
-    
     def update(self, x, frame):
         # print(frame.shape)
         left = frame[0]/2**15

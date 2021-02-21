@@ -1,9 +1,9 @@
 # import numpy as np
 # from PySide6 import QtWidgets, QtCore
 from pyqtgraph.Qt import QtWidgets, QtCore, QtGui
+import pyqtgraph as pg
 
-
-from kaudio.plots import KaStereoWaveform
+from kaudio.plots import KaStereoWaveform, View
 from kaudio.audio import AudioListener
 
 
@@ -20,29 +20,39 @@ from kaudio.audio import AudioListener
 class Controller(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
-        # self.view = View()
-        self.setCentralWidget(View())
+        self.view = View()
+        self.setCentralWidget(self.view)
         self.setWindowTitle('KAudio')
+        self.resize(800, 600)
 
-        dock = QtWidgets.QDockWidget("Options", parent=self)
+        self.plots = dict()
+
+
+        dock = QtWidgets.QDockWidget("Options", self)
         dock.setFeatures(dock.NoDockWidgetFeatures)
-
         
+        self.widget_options = QtWidgets.QWidget(dock)
+        dock_layout = QtWidgets.QVBoxLayout(self.widget_options)
+
+
+
 
         self.btn_rcd_on = QtWidgets.QPushButton("Start listening", dock)
-        # self.layout.addWidget(self.btn_rcd_on)
         self.btn_rcd_off = QtWidgets.QPushButton("Stop listening", dock)
-        # self.layout.addWidget(self.btn_rcd_off)
-        
         self.btn_rcd_on.clicked.connect(self.record_on)
-        # self.btn_rcd_on.show()
-        
-        
-        
         self.btn_rcd_off.clicked.connect(self.record_off)
         self.btn_rcd_off.hide()
-        dock.setWidget(self.btn_rcd_off)
-        dock.setWidget(self.btn_rcd_on)
+        dock_layout.addWidget(self.btn_rcd_off)
+        dock_layout.addWidget(self.btn_rcd_on)
+        
+        self.chkbx_stereo_waveform = QtWidgets.QCheckBox("Show waveform", dock)
+        # self.chkbx_stereo_waveform.
+        self.chkbx_stereo_waveform.stateChanged.connect(self.display_waveform)
+        self.chkbx_stereo_waveform.hide()
+        dock_layout.addWidget(self.chkbx_stereo_waveform)
+        dock.setWidget(self.widget_options)
+        
+
         self.addDockWidget(
             QtGui.Qt.RightDockWidgetArea,
             dock,
@@ -80,44 +90,57 @@ class Controller(QtWidgets.QMainWindow):
         # self.spectrum = self.win.addPlot(
         #     title='SPECTRUM', row=2, col=1, axisItems={'bottom': sp_xaxis},
         # )
-        self.show()
+        
+        self.timer_update = QtCore.QTimer()
+        self.timer_update.timeout.connect(self.update)
 
+        self.show()
+    @QtCore.Slot()
     def record_on(self):
         self.audio_listener = AudioListener()
 
-        # self.timer_update.start(20)
-        self.timer_update.start(1000)
+        self.timer_update.start(150)
+        # self.timer_update.start(500)
 
-
-        if not hasattr(self, 'stereo_waveforms'):
-            self.stereo_waveforms = KaStereoWaveform()
-            self.layout.addWidget(self.stereo_waveforms)
-        self.stereo_waveforms.hide()
+        if not 'stereo_waveform' in self.plots:
+            self.plots['stereo_waveform'] = KaStereoWaveform()
+            self.view.add_widget(self.plots['stereo_waveform'])
+            self.chkbx_stereo_waveform.setChecked(True)
+            self.chkbx_stereo_waveform.show()
+            # self.button = QtWidgets.QPushButton("Hide waveforms")
+        # if not hasattr(self, 'stereo_waveforms'):
+        #     self.stereo_waveforms = KaStereoWaveform()
+        #     self.layout.addWidget(self.stereo_waveforms)
+        # self.stereo_waveforms.hide()
         
         # print('hiding record on')
         self.btn_rcd_on.hide()
         self.btn_rcd_off.show()
         # print('finishing hiding record on')
+    @QtCore.Slot()
     def record_off(self):
         self.audio_listener.stream.stop_stream()
         self.btn_rcd_off.hide()
         self.btn_rcd_on.show()
-        
+        self.timer_update.stop()
+    @QtCore.Slot()
+    def display_waveform(self):
+        if self.chkbx_stereo_waveform.isChecked():
+            self.plots['stereo_waveform'].show()
+            self.plots['stereo_waveform'].update_flag = True
+        else:
+            self.plots['stereo_waveform'].hide()
+            self.plots['stereo_waveform'].update_flag = False
     def update(self):
         '''
         Main update loop
         '''
-        pass
-        # x, frame = self.audio_listener.get_update()
+        # pass
+        x, frame = self.audio_listener.get_update()
 
-        # if hasattr(self, "work") and callable(self.work):
-        #     self.stereo_waveforms.update(x, frame)
-class View(QtWidgets.QWidget):
-    def __init__(self):
-        super().__init__()
-        self.layout = QtWidgets.QVBoxLayout(self)
+        if 'stereo_waveform' in self.plots and self.plots['stereo_waveform'].update_flag:
+            self.plots['stereo_waveform'].update(x, frame)
 
-        self.timer_update = QtCore.QTimer()
-        self.timer_update.timeout.connect(self.update)
+
 
     

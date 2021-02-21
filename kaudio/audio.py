@@ -18,8 +18,8 @@ class AudioListener(object):
         self.FORMAT = pyaudio.paInt16
         self.CHANNELS = 2
         self.RATE = 48000
-        self.CHUNK = 1024 * 1
-
+        self.CHUNK = 7168
+        
         self.p = pyaudio.PyAudio()
         self.stream = self.p.open(
             format=self.FORMAT,
@@ -28,7 +28,7 @@ class AudioListener(object):
             input=True,
             input_device_index=3,
             output=True,
-            output_device_index=9,
+            output_device_index=8,
             frames_per_buffer=self.CHUNK,
         )
         # self.x = np.arange(0, 2 * self.CHUNK, 2)
