@@ -1,3 +1,7 @@
+# ignore everything in these folders
+examples/
+archive/
+
 # ignore music files
 *.mp3
 *.m4a
