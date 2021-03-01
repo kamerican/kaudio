@@ -35,12 +35,14 @@ def get_pyaudio_device_indices(pa, API, input_device_name=None, output_device_na
     
     devices = dict()
     if input_device_name:
-        devices['input'] = input_device['index'],
+        devices['input'] = input_device['index']
     if output_device_name:
-        devices['output'] = output_device['index'],
+        # For some reason a tuple is stored so take the first item of the tuple
+        # print(output_device['index'])
+        # print(type(output_device['index']))
+        devices['output'] = output_device['index']
     
     return devices
-
 def list_all_audio_devices():
     pa = pyaudio.PyAudio()
     for id in range(pa.get_device_count()):
@@ -48,6 +50,9 @@ def list_all_audio_devices():
         for key, value in dev_dict.items():
             print(key, value)
         print('\n')
+
+
+
 
 class AudioStack(object):
     """

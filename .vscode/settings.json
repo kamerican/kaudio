@@ -17,4 +17,5 @@
     "editor.minimap.renderCharacters": false,
     "editor.minimap.scale": 1,
     "editor.minimap.size": "fill",
+    "editor.minimap.enabled": false,
 }
